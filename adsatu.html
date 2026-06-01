@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ano Bissexto - Verificador Online</title>
+
+<meta name="description" content="Descubra se um ano é bissexto e consulte o calendário completo de anos bissextos de 2000 a 2500.">
+
+<script async
+src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9348628676322171"
+crossorigin="anonymous"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#121212;
+    color:white;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:1000px;
+    background:#1e1e1e;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.input-area{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+input{
+    padding:12px;
+    width:220px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    background:#00c853;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    background:#00e676;
+}
+
+#resultado{
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:25px;
+}
+
+.calendario{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:12px;
+}
+
+.ano{
+    background:#2b2b2b;
+    padding:15px;
+    text-align:center;
+    border-radius:10px;
+    transition:.3s;
+}
+
+.ano:hover{
+    transform:scale(1.05);
+}
+
+.bissexto{
+    background:#00c853;
+    font-weight:bold;
+}
+
+.navegacao{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:10px;
+    margin-top:25px;
+}
+
+.navegacao button{
+    width:50px;
+}
+
+#indicador{
+    font-size:18px;
+    font-weight:bold;
+}
+
+@media(max-width:700px){
+    .calendario{
+        grid-template-columns:repeat(3, 1fr);
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>📅 Verificador de Ano Bissexto</h1>
+
+    <div class="input-area">
+        <input
+            type="number"
+            id="ano"
+            placeholder="Digite um ano">
+        <button onclick="verificar()">
+            Verificar
+        </button>
+    </div>
+
+    <div id="resultado"></div>
+
+    <h2 style="text-align:center; margin-bottom:20px;">
+        Calendário de Anos Bissextos (2000–2500)
+    </h2>
+
+    <div id="calendario" class="calendario"></div>
+
+    <div class="navegacao">
+        <button onclick="anterior()">◀</button>
+        <span id="indicador">1 de 11</span>
+        <button onclick="proxima()">▶</button>
+    </div>
+
+</div>
+
+<script>
+
+const inicio = 2000;
+const fim = 2500;
+const anosPorPagina = 50;
+
+const totalPaginas =
+Math.ceil((fim - inicio + 1) / anosPorPagina);
+
+let paginaAtual = 1;
+
+function ehBissexto(ano){
+    return (ano % 4 === 0 && ano % 100 !== 0)
+        || (ano % 400 === 0);
+}
+
+function verificar(){
+
+    const ano =
+    Number(document.getElementById("ano").value);
+
+    const resultado =
+    document.getElementById("resultado");
+
+    if(!ano){
+        resultado.innerHTML =
+        "⚠️ Digite um ano válido.";
+        return;
+    }
+
+    if(ehBissexto(ano)){
+        resultado.innerHTML =
+        `✅ ${ano} é um ano bissexto.`;
+    }else{
+        resultado.innerHTML =
+        `❌ ${ano} não é um ano bissexto.`;
+    }
+}
+
+function carregarPagina(){
+
+    const calendario =
+    document.getElementById("calendario");
+
+    calendario.innerHTML = "";
+
+    const primeiroAno =
+    inicio + ((paginaAtual - 1) * anosPorPagina);
+
+    const ultimoAno =
+    Math.min(
+        primeiroAno + anosPorPagina - 1,
+        fim
+    );
+
+    for(let ano = primeiroAno;
+        ano <= ultimoAno;
+        ano++){
+
+        const card =
+        document.createElement("div");
+
+        card.classList.add("ano");
+
+        if(ehBissexto(ano)){
+            card.classList.add("bissexto");
+        }
+
+        card.textContent = ano;
+
+        calendario.appendChild(card);
+    }
+
+    document.getElementById("indicador")
+    .textContent =
+    `${paginaAtual} de ${totalPaginas}`;
+}
+
+function proxima(){
+
+    if(paginaAtual < totalPaginas){
+        paginaAtual++;
+        carregarPagina();
+    }
+}
+
+function anterior(){
+
+    if(paginaAtual > 1){
+        paginaAtual--;
+        carregarPagina();
+    }
+}
+
+carregarPagina();
+
+</script>
+
+</body>
+</html>
